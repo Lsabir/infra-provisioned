@@ -1,0 +1,37 @@
+# Example values for Terraform variables
+
+# Prefix for naming resources
+prefix = "vnet-dev"
+
+# Azure region
+location = "germanywestcentral"
+
+# Tags to apply to all resources
+tags = {
+  project     = "vnet-dev"
+  environment = "dev"
+  owner       = "devops-team"
+}
+
+# Address space for the virtual network
+vnet_address_space = [
+  "10.0.0.0/16"
+]
+
+# Subnets to create within the virtual network
+subnets = [
+  {
+    name           = "subnet1"
+    address_prefix = "10.0.1.0/24"
+  },
+  {
+    name           = "subnet2"
+    address_prefix = "10.0.2.0/24"
+  }
+]
+
+# Backend configuration for Terraform state
+backend_resource_group_name  = "example-backend-rg"
+backend_storage_account_name = "examplebackendstorage"
+backend_container_name       = "tfstate"
+backend_key                  = "terraform.tfstate"
