@@ -1,0 +1,34 @@
+# Example values for Terraform variables
+
+# Azure region
+location = "germanywestcentral"
+
+# Prefix for naming resources
+prefix = "vmubuntu-dev"
+
+# Tags to apply to all resources
+tags = {
+  project     = "vm-ubuntu-storage"
+  environment = "dev"
+  owner       = "devops-team"
+}
+
+# Backend configuration
+backend_resource_group_name  = "example-backend-rg"
+backend_storage_account_name = "examplebackendstorage"
+backend_container_name       = "tfstate"
+backend_key                  = "terraform.tfstate"
+
+# Virtual network configuration
+vnet_address_space    = "10.0.0.0/16"
+subnet_name           = "default"
+subnet_address_prefix = "10.0.1.0/24"
+
+# Virtual machine configuration
+vm_size       = "Standard_B2s"
+os            = "ubuntu-22.04"
+admin_username = "azureuser"
+
+# Storage account configuration
+storage_account_tier             = "Standard"
+storage_account_replication_type = "LRS"
