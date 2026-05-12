@@ -1,0 +1,23 @@
+# Example values for terraform.tfvars
+
+# Prefix for naming resources
+prefix = "private-dev"
+
+# Azure region
+location = "germanywestcentral"
+
+# Tags to apply to all resources
+tags = {
+  project     = "private-subnet-project"
+  environment = "dev"
+  owner       = "devops-team"
+}
+
+# Address space for the virtual network
+vnet_address_space = ["10.0.0.0/16"]
+
+# Subnet configuration
+subnet_name                               = "private-subnet"
+subnet_address_prefix                     = "10.0.1.0/24"
+private_endpoint_network_policies_enabled = false
+private_link_service_network_policies_enabled = false
