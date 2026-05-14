@@ -58,6 +58,11 @@ resource "azurerm_linux_virtual_machine" "main" {
     version   = "latest"
   }
 
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = file(var.ssh_key_path)
+  }
+
   identity {
     type = "SystemAssigned"
   }
@@ -71,6 +76,7 @@ resource "azurerm_storage_account" "main" {
   location                 = azurerm_resource_group.main.location
   account_tier             = var.storage_account_tier
   account_replication_type = var.storage_account_replication_type
+  enable_https_traffic_only = var.enable_https_traffic_only
 
   tags = local.tags
 }
