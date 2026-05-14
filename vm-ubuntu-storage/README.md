@@ -4,13 +4,13 @@
 
 ## Résumé
 
-Création d'une machine virtuelle Ubuntu avec stockage et réseau associé.
+Création d'une machine virtuelle Ubuntu avec un disque de stockage associé, en utilisant les ressources réseau existantes.
 
 ## Ressources Azure créées
 
-- **NETWORK** : `vmubuntu-dev-network`
-- **VM** : `vmubuntu-dev-vm`
-- **STORAGE** : `vmubuntu-dev-storage`
+- **NETWORK** : `existing-network`
+- **VM** : `ubuntu-vm`
+- **STORAGE** : `vm-storage`
 
 ## Paramètres
 
