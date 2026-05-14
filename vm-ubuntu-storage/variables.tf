@@ -92,3 +92,14 @@ variable "storage_account_replication_type" {
   type        = string
   default     = "LRS"
 }
+
+variable "enable_https_traffic_only" {
+  description = "Enable HTTPS traffic only for the storage account."
+  type        = bool
+  default     = true
+}
+
+variable "ssh_key_path" {
+  description = "Path to the SSH public key for VM authentication."
+  type        = string
+}
