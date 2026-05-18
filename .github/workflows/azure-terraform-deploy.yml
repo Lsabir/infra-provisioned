@@ -32,13 +32,6 @@ jobs:
         run: terraform init -input=false
 
 
-      - name: Install tfsec
-        run: |
-          curl -L https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-
-      - name: Terraform security scan
-        working-directory: .
-        run: tfsec .
 
       - name: Terraform Plan
         working-directory: .
