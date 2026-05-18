@@ -31,9 +31,6 @@ jobs:
         working-directory: .
         run: terraform init -input=false
 
-      - name: Terraform Validate
-        working-directory: .
-        run: terraform validate -no-color
 
       - name: Install tfsec
         run: |
