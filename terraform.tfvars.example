@@ -6,4 +6,4 @@ owner = "devops-team"
 
 vnet_address_space = ["10.1.0.0/16"]
 subnet_prefix = "10.1.1.0/24"
-admin_ip_cidr = "0.0.0.0/0"
+admin_ip_cidr = "41.137.0.0/16"  # À adapter : remplacez par votre IP/CIDR (ex: "YOUR_IP/32")

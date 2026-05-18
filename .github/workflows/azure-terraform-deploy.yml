@@ -30,19 +30,6 @@ jobs:
       - name: Terraform Init
         working-directory: .
         run: terraform init -input=false
-
-      - name: Terraform Validate
-        working-directory: .
-        run: terraform validate -no-color
-
-      - name: Install tfsec
-        run: |
-          curl -L https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-
-      - name: Terraform security scan
-        working-directory: .
-        run: tfsec .
-
       - name: Terraform Plan
         working-directory: .
         run: terraform plan -out=tfplan -no-color

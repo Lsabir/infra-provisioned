@@ -29,5 +29,9 @@ resource "azurerm_subnet" "agent_subnet" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.subnet_prefix]
+}
+
+resource "azurerm_subnet_network_security_group_association" "agent_nsg_assoc" {
+  subnet_id                 = azurerm_subnet.agent_subnet.id
   network_security_group_id = azurerm_network_security_group.agent_nsg.id
 }
