@@ -1,0 +1,23 @@
+# Example values for Terraform variables
+
+prefix = "vmubuntu-dev"
+
+location = "germanywestcentral"
+
+tags = {
+  project     = "vm-ubuntu-storage"
+  environment = "dev"
+  owner       = "devops-team"
+}
+
+vm_size = "Standard_B2s"
+os = "ubuntu-22.04"
+storage_account_type = "Standard_LRS"
+disk_size_gb = 30
+admin_username = "azureuser"
+network_interface = "existing-network-nic"
+
+backend_resource_group_name = "example-backend-rg"
+backend_storage_account_name = "examplebackendstorage"
+backend_container_name = "tfstate"
+backend_key = "terraform.tfstate"
