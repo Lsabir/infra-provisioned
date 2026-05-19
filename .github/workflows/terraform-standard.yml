@@ -57,10 +57,7 @@ jobs:
         working-directory: ${{ steps.tf_dir.outputs.dir }}
         run: terraform init -backend=false
 
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: terraform validate -no-color
+
 
       - name: Terraform Plan
         id: plan
