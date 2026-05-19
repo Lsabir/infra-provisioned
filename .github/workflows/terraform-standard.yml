@@ -42,10 +42,9 @@ jobs:
       - name: Détecter le dossier Terraform modifié
         id: tf_dir
         run: |
-          CHANGED_DIR=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
-            | grep '\.tf$' \
-            | xargs -I{} dirname {} \
-            | sort -u | head -1)
+          echo "🔎 Diff entre origin/${{ github.base_ref }} et HEAD"
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | tee /tmp/changed_files.txt
+          CHANGED_DIR=$(cat /tmp/changed_files.txt | grep '\.tf$' | xargs -I{} dirname {} | sort -u | head -1)
           if [ -z "$CHANGED_DIR" ]; then
             echo "❌ Aucun fichier .tf modifié détecté"
             exit 1
@@ -55,16 +54,26 @@ jobs:
 
       - name: Terraform Init
         working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: terraform init -backend=false
+        run: |
+          echo "📁 Contenu du dossier :"
+          ls -la
+          echo ""
+          echo "🚀 Initialisation Terraform..."
+          terraform init -input=false
+        continue-on-error: true
 
-
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ steps.tf_dir.outputs.dir }}
+        run: terraform validate -no-color
+        continue-on-error: true
 
       - name: Terraform Plan
         id: plan
         working-directory: ${{ steps.tf_dir.outputs.dir }}
         run: |
-          terraform plan -no-color -out=tfplan 2>&1 | tee /tmp/plan_output.txt
-          echo "exitcode=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          terraform plan -no-color -detailed-exitcode -out=tfplan 2>&1 | tee /tmp/plan_output.txt
+          echo "exitcode=$?" >> "$GITHUB_OUTPUT"
         continue-on-error: true
 
       - name: Poster le résultat du Plan sur la PR
@@ -85,6 +94,7 @@ jobs:
               `|----------|----------|`,
               `| Validate | ${{ steps.validate.outcome }} |`,
               `| Plan     | ${{ steps.plan.outcome }} |`,
+              `| Exit Code | ${{ steps.plan.outputs.exitcode }} |`,
               '',
               '<details><summary>Détails du plan</summary>',
               '',
@@ -93,7 +103,7 @@ jobs:
               '```',
               '</details>',
               '',
-              '> Mergez cette PR pour déclencher le **terraform apply** automatiquement.'
+              '> ✅ Mergez cette PR pour déclencher le **terraform apply** automatiquement après approbation.'
             ].join('\n');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -102,7 +112,11 @@ jobs:
               body
             });
 
-
+      - name: Vérifier que le plan est valide
+        if: steps.plan.outputs.exitcode == '1'
+        run: |
+          echo "❌ Terraform plan a échoué (exit code 1)"
+          exit 1
 
   apply:
     name: "Terraform Apply"
@@ -132,10 +146,9 @@ jobs:
       - name: Détecter le dossier Terraform modifié
         id: tf_dir
         run: |
-          CHANGED_DIR=$(git diff --name-only HEAD~1 HEAD \
-            | grep '\.tf$' \
-            | xargs -I{} dirname {} \
-            | sort -u | head -1)
+          echo "🔎 Diff entre ${{ github.event.before }} et ${{ github.sha }}"
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tee /tmp/changed_files.txt
+          CHANGED_DIR=$(cat /tmp/changed_files.txt | grep '\.tf$' | xargs -I{} dirname {} | sort -u | head -1)
           if [ -z "$CHANGED_DIR" ]; then
             echo "Aucun .tf modifié dans ce push — apply ignoré."
             echo "dir=" >> "$GITHUB_OUTPUT"
@@ -147,7 +160,13 @@ jobs:
       - name: Terraform Init
         if: steps.tf_dir.outputs.dir != ''
         working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: terraform init -backend=false
+        run: |
+          echo "📁 Contenu du dossier :"
+          ls -la
+          echo ""
+          echo "🚀 Initialisation Terraform..."
+          terraform init -input=false
+        continue-on-error: true
 
       - name: Terraform Apply
         if: steps.tf_dir.outputs.dir != ''
