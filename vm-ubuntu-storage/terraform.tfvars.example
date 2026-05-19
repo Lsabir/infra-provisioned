@@ -1,0 +1,37 @@
+# Example values for terraform.tfvars
+
+prefix = "vmubuntu-dev"
+
+location = "germanywestcentral"
+
+tags = {
+  project     = "vm-ubuntu-storage"
+  environment = "dev"
+  owner       = "devops-team"
+}
+
+network_address_space = "10.0.0.0/16"
+
+subnet_name = "default"
+
+subnet_address_prefix = "10.0.1.0/24"
+
+vm_size = "Standard_B2s"
+
+vm_os = "ubuntu-22.04"
+
+vm_admin_username = "azureuser"
+
+vm_disk_size_gb = 30
+
+storage_account_tier = "Standard"
+
+storage_account_replication_type = "LRS"
+
+backend_resource_group_name = "example-backend-rg"
+
+backend_storage_account_name = "examplebackendstorage"
+
+backend_container_name = "tfstate"
+
+backend_key = "terraform.tfstate"
