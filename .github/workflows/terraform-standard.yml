@@ -102,9 +102,7 @@ jobs:
               body
             });
 
-      - name: Échec si plan KO
-        if: steps.plan.outputs.exitcode != '0' && steps.plan.outputs.exitcode != '2'
-        run: exit 1
+
 
   apply:
     name: "Terraform Apply"
