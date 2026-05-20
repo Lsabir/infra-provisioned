@@ -1,35 +1,73 @@
 name: 'Terraform Azure Deployment'
 
 on:
-push:
-pull_request:
-branches:
-- main
+  pull_request:
+    branches:
+      - main        # Plan uniquement sur PR → main
+  push:
+    branches:
+      - main        # Apply uniquement après merge dans main
 
 jobs:
-terraform:
-runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v4
+  # ─────────────────────────────────────────
+  # JOB 1 : Terraform PLAN (sur Pull Request)
+  # ─────────────────────────────────────────
+  terraform-plan:
+    name: 'Terraform Plan (PR)'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
 
-  - name: Login Azure
-    uses: azure/login@v2
-    with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  - name: Set up Terraform
-    uses: hashicorp/setup-terraform@v3
+      - name: Login Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
 
+      - name: Terraform Init
+        run: terraform init
 
-  - name: Terraform Init
-    run: terraform init
+      - name: Terraform Format Check
+        run: terraform fmt -check
+        continue-on-error: true
 
-  - name: Terraform Plan
-    run: terraform plan -out=tfplan
+      - name: Terraform Validate
+        run: terraform validate
 
-  - name: Terraform Apply
-    run: terraform apply -auto-approve tfplan
-    voila le pipline dans le main je change quoi 
+      - name: Terraform Plan
+        run: terraform plan
+
+  # ─────────────────────────────────────────
+  # JOB 2 : Terraform APPLY (après merge main)
+  # ─────────────────────────────────────────
+  terraform-apply:
+    name: 'Terraform Apply (Deploy)'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
