@@ -52,126 +52,18 @@ jobs:
           echo "dir=$CHANGED_DIR" >> "$GITHUB_OUTPUT"
           echo "✅ Dossier Terraform : $CHANGED_DIR"
 
-      - name: Terraform Init
-        working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: |
-          echo "📁 Contenu du dossier :"
-          ls -la
-          echo ""
-          echo "🚀 Initialisation Terraform..."
-          terraform init -input=false
-        continue-on-error: true
+       steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: terraform validate -no-color
-        continue-on-error: true
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
 
       - name: Terraform Plan
-        id: plan
-        working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: |
-          terraform plan -no-color -detailed-exitcode -out=tfplan 2>&1 | tee /tmp/plan_output.txt
-          echo "exitcode=$?" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
-
-      - name: Poster le résultat du Plan sur la PR
-        uses: actions/github-script@v7
-        if: always()
-        with:
-          script: |
-            const fs = require('fs');
-            let planOutput = '';
-            try {
-              planOutput = fs.readFileSync('/tmp/plan_output.txt', 'utf8').slice(-3000);
-            } catch(e) { planOutput = 'Sortie non disponible'; }
-            const status = '${{ steps.plan.outcome }}' === 'success' ? '✅' : '❌';
-            const body = [
-              `## ${status} Terraform Plan — \`${{ steps.tf_dir.outputs.dir }}\``,
-              '',
-              `| Étape    | Résultat |`,
-              `|----------|----------|`,
-              `| Validate | ${{ steps.validate.outcome }} |`,
-              `| Plan     | ${{ steps.plan.outcome }} |`,
-              `| Exit Code | ${{ steps.plan.outputs.exitcode }} |`,
-              '',
-              '<details><summary>Détails du plan</summary>',
-              '',
-              '```hcl',
-              planOutput,
-              '```',
-              '</details>',
-              '',
-              '> ✅ Mergez cette PR pour déclencher le **terraform apply** automatiquement après approbation.'
-            ].join('\n');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            });
-
-      - name: Vérifier que le plan est valide
-        if: steps.plan.outputs.exitcode == '1'
-        run: |
-          echo "❌ Terraform plan a échoué (exit code 1)"
-          exit 1
-
-  apply:
-    name: "Terraform Apply"
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      id-token: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - name: Login Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "~1.9"
-          terraform_wrapper: false
-
-      - name: Détecter le dossier Terraform modifié
-        id: tf_dir
-        run: |
-          echo "🔎 Diff entre ${{ github.event.before }} et ${{ github.sha }}"
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | tee /tmp/changed_files.txt
-          CHANGED_DIR=$(cat /tmp/changed_files.txt | grep '\.tf$' | xargs -I{} dirname {} | sort -u | head -1)
-          if [ -z "$CHANGED_DIR" ]; then
-            echo "Aucun .tf modifié dans ce push — apply ignoré."
-            echo "dir=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "dir=$CHANGED_DIR" >> "$GITHUB_OUTPUT"
-          echo "✅ Dossier Terraform : $CHANGED_DIR"
-
-      - name: Terraform Init
-        if: steps.tf_dir.outputs.dir != ''
-        working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: |
-          echo "📁 Contenu du dossier :"
-          ls -la
-          echo ""
-          echo "🚀 Initialisation Terraform..."
-          terraform init -input=false
-        continue-on-error: true
+        run: terraform -chdir=terraform plan -out=tfplan
 
       - name: Terraform Apply
-        if: steps.tf_dir.outputs.dir != ''
-        working-directory: ${{ steps.tf_dir.outputs.dir }}
-        run: |
-          terraform apply -auto-approve -no-color 2>&1 | tee /tmp/apply_output.txt
-          echo "✅ Terraform Apply terminé"
-          grep -E "^(Apply complete|Error)" /tmp/apply_output.txt || tail -5 /tmp/apply_output.txt
+        run: terraform -chdir=terraform apply -auto-approve tfplan
