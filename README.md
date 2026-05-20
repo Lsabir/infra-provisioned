@@ -1,72 +1,53 @@
-# Sample Infra Provisioned
+# Infrastructure : infra-provisioned
 
-Ce dépôt est un exemple minimal d'un projet Terraform "infra-provisioned" pour tester l'agent.
+> Généré automatiquement par l'Agent IA DevOps
 
-## Contenu
+## Résumé
 
-- `providers.tf` : configuration du provider AzureRM
-- `variables.tf` : variables du projet
-- `main.tf` : création du Resource Group et module réseau
-- `outputs.tf` : sorties utiles
-- `modules/network/` : module de réseau VNet / Subnet
-- `terraform.tfvars.example` : exemple de valeurs
+Création d'une machine virtuelle Ubuntu avec stockage dans le réseau existant.
 
-## Installation
+## Ressources Azure créées
 
-1. Copier le fichier d'exemple :
+- **VM** : `ubuntu-vm`
 
-```powershell
+## Paramètres
+
+| Paramètre | Valeur |
+|-----------|--------|
+| Région | `swedencentral` |
+| Environnement | `dev` |
+| Préfixe | `infra-prov` |
+
+## Déploiement
+
+```bash
+# 1. Copier et renseigner les variables
 cp terraform.tfvars.example terraform.tfvars
-```
+# Editer terraform.tfvars avec vos vraies valeurs
 
-2. Remplir `terraform.tfvars` si nécessaire.
-
-3. Initialiser Terraform :
-
-```powershell
-cd infra-provisioned-sample
+# 2. Initialiser Terraform
 terraform init
+
+# 3. Vérifier la configuration
+terraform validate
+
+# 4. Voir le plan
+terraform plan -var-file=terraform.tfvars
+
+# 5. Appliquer (après validation humaine)
+terraform apply -var-file=terraform.tfvars
 ```
 
-4. Vérifier le plan :
+## Fichiers générés
 
-```powershell
-terraform plan
-```
+- `vm_ubuntu.tf`
 
-5. Appliquer :
+## Tags appliqués
 
-```powershell
-terraform apply -auto-approve
-```
-
-## Note
-
-Ce projet peut être poussé dans un repository GitHub (`infra-provisioned`) pour que l'agent lise les fichiers Terraform existants.
-
-## Pipeline Azure CI/CD
-
-Un workflow GitHub Actions est disponible dans `.github/workflows/azure-terraform-deploy.yml`.
-Il réalise les étapes suivantes :
-
-1. `az login` via `azure/login@v2` avec le secret `AZURE_CREDENTIALS`
-2. `terraform init`
-3. `terraform validate`
-4. `tfsec` pour un scan de sécurité Terraform
-5. `terraform plan`
-6. `terraform apply` sur `main`
-
-### Secret GitHub requis
-
-Ajoutez un secret `AZURE_CREDENTIALS` dans votre repository GitHub avec le JSON suivant :
-
-```json
+```hcl
 {
-  "clientId": "<ARM_CLIENT_ID>",
-  "clientSecret": "<ARM_CLIENT_SECRET>",
-  "subscriptionId": "<ARM_SUBSCRIPTION_ID>",
-  "tenantId": "<ARM_TENANT_ID>"
+  "project": "dev",
+  "environment": "dev",
+  "owner": "devops-team"
 }
 ```
-
-Ensuite, poussez votre code sur la branche `main` pour déclencher le pipeline.
