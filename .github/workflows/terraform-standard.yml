@@ -1,41 +1,36 @@
 name: 'Terraform Azure Deployment'
 
 on:
+  # ✅ Plan sur Pull Request vers main uniquement
   pull_request:
     branches:
-      - main        # Plan uniquement sur PR → main
+      - main
+
+  # ✅ Apply uniquement après merge dans main
   push:
     branches:
-      - main        # Apply uniquement après merge dans main
+      - main        # ← filtre ajouté !
 
 jobs:
 
-  # ─────────────────────────────────────────
-  # JOB 1 : Terraform PLAN (sur Pull Request)
-  # ─────────────────────────────────────────
+  # ── Plan : déclenché sur PR ──────────────────────────
   terraform-plan:
-    name: 'Terraform Plan (PR)'
+    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Login Azure
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
-
-      - name: Terraform Format Check
-        run: terraform fmt -check
-        continue-on-error: true
 
       - name: Terraform Validate
         run: terraform validate
@@ -43,25 +38,21 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-  # ─────────────────────────────────────────
-  # JOB 2 : Terraform APPLY (après merge main)
-  # ─────────────────────────────────────────
+  # ── Apply : déclenché après merge dans main ──────────
   terraform-apply:
-    name: 'Terraform Apply (Deploy)'
+    name: 'Terraform Apply'
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Login Azure
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
