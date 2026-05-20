@@ -4,7 +4,7 @@
 
 ## Résumé
 
-Création d'une machine virtuelle Ubuntu avec stockage dans le réseau existant.
+Création d'une VM Ubuntu avec stockage dans le réseau existant.
 
 ## Ressources Azure créées
 
@@ -40,7 +40,8 @@ terraform apply -var-file=terraform.tfvars
 
 ## Fichiers générés
 
-- `vm_ubuntu.tf`
+- `infra-provisioned_variables.tf`
+- `vm_ubuntu_additional.tf`
 
 ## Tags appliqués
 
