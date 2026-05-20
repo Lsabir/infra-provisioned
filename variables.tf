@@ -51,3 +51,32 @@ variable "admin_ip_cidr" {
   type        = string
   default     = "203.0.113.0/24"  # À adapter : remplacez par votre IP/CIDR (ex: "YOUR_IP/32")
 }
+
+
+variable "resource_group_name" {
+  description = "Resource group name used by the network module."
+  type        = string
+}
+
+variable "location" {
+  description = "Azure location used by the network module."
+  type        = string
+}
+
+variable "vnet_name" {
+  description = "Name of the virtual network."
+  type        = string
+}
+
+variable "address_space" {
+  description = "Address space for the virtual network."
+  type        = list(string)
+}
+
+
+
+variable "tags" {
+  description = "Tags applied to all network resources."
+  type        = map(string)
+  default     = {}
+}
