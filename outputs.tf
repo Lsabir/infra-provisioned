@@ -1,14 +1,11 @@
 output "resource_group_name" {
-  description = "Name of the created resource group."
-  value       = azurerm_resource_group.rg.name
+  value = azurerm_resource_group.rg.name
 }
 
-output "vnet_id" {
-  description = "ID of the created virtual network."
-  value       = module.network.vnet_id
+output "resource_group_id" {
+  value = azurerm_resource_group.rg.id
 }
 
-output "agent_subnet_id" {
-  description = "ID of the agent subnet."
-  value       = module.network.agent_subnet_id
+output "location" {
+  value = azurerm_resource_group.rg.location
 }

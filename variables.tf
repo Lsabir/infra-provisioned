@@ -1,82 +1,39 @@
 variable "location" {
-  description = "Azure region for all resources."
+  description = "Azure region."
   type        = string
   default     = "swedencentral"
 }
 
 variable "resource_group_name" {
-  description = "Name of the Azure Resource Group."
+  description = "Resource group name."
   type        = string
   default     = "infra-provisioned-rg"
 }
 
 variable "naming_prefix" {
-  description = "Prefix for created resources."
+  description = "Prefix for resource names."
   type        = string
   default     = "infra-prov"
 }
 
 variable "environment" {
-  description = "Logical environment tag."
+  description = "Environment tag."
   type        = string
   default     = "dev"
 }
 
-variable "owner" {
-  description = "Owner tag value."
-  type        = string
-  default     = "devops-team"
-}
-
 variable "common_tags" {
-  description = "Additional tags for all resources."
+  description = "Tags applied to all resources."
   type        = map(string)
-  default     = {}
+  default = {
+    managed_by = "agent-ia-devops"
+    repo       = "infra-provisioned"
+  }
 }
 
-variable "vnet_address_space" {
-  description = "Address space for the virtual network."
-  type        = list(string)
-  default     = ["10.1.0.0/16"]
-}
-
-variable "subnet_prefix" {
-  description = "Subnet prefix for the agent subnet."
+variable "ssh_public_key" {
+  description = "SSH public key (required when creating Linux VMs)."
   type        = string
-  default     = "10.1.1.0/24"
-}
-
-variable "admin_ip_cidr" {
-  description = "CIDR range allowed to reach the VM or services."
-  type        = string
-  default     = "203.0.113.0/24"  # À adapter : remplacez par votre IP/CIDR (ex: "YOUR_IP/32")
-}
-
-
-variable "resource_group_name" {
-  description = "Resource group name used by the network module."
-  type        = string
-}
-
-variable "location" {
-  description = "Azure location used by the network module."
-  type        = string
-}
-
-variable "vnet_name" {
-  description = "Name of the virtual network."
-  type        = string
-}
-
-variable "address_space" {
-  description = "Address space for the virtual network."
-  type        = list(string)
-}
-
-
-
-variable "tags" {
-  description = "Tags applied to all network resources."
-  type        = map(string)
-  default     = {}
+  default     = ""
+  sensitive   = true
 }
