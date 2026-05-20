@@ -1,0 +1,28 @@
+# Example values for Terraform variables
+
+# Prefix for naming resources
+prefix = "vmubuntu-dev"
+
+# Azure region
+location = "germanywestcentral"
+
+# Tags to apply to all resources
+tags = {
+  project     = "vm-ubuntu-storage"
+  environment = "dev"
+  owner       = "devops-team"
+}
+
+# Backend configuration
+backend_resource_group_name  = "example-backend-rg"
+backend_storage_account_name = "examplebackendstorage"
+backend_container_name       = "tfstate"
+backend_key                  = "terraform.tfstate"
+
+# VM configuration
+vm_size                  = "Standard_B2s"
+os                       = "ubuntu-22.04"
+storage_os_disk_size_gb  = 30
+storage_data_disk_size_gb = 100
+admin_username           = "azureuser"
+network_interface        = "existing-network-nic"
