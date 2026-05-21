@@ -4,11 +4,11 @@
 
 ## Résumé
 
-Ajout d'un subnet privé dans le réseau existant pour l'environnement de développement.
+Ajout d'un réseau virtuel (VNet) et d'un sous-réseau privé pour l'environnement dev.
 
 ## Ressources Azure créées
 
-- **NETWORK** : `private-subnet`
+- **NETWORK** : `infra-dev-network`
 
 ## Paramètres
 

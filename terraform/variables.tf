@@ -24,3 +24,9 @@ variable "tags" {
     environment = "dev"
   }
 }
+
+variable "naming_prefix" {
+  description = "Prefix for resource names."
+  type        = string
+  default     = "infra-dev"
+}
