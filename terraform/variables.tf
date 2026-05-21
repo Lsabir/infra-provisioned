@@ -37,3 +37,9 @@ variable "ssh_public_key" {
   default     = ""
   sensitive   = true
 }
+
+variable "virtual_network_name" {
+  description = "Name of the virtual network to associate with the subnet."
+  type        = string
+  default     = "vnet"
+}
