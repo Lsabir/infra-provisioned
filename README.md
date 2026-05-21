@@ -1,20 +1,20 @@
-# Infrastructure : infra-provisioned
+# Infrastructure : infrastructure-networking
 
 > Généré automatiquement par l'Agent IA DevOps
 
 ## Résumé
 
-Ajout d'un réseau virtuel (VNet) et d'un sous-réseau privé pour l'environnement dev.
+Création d'un Virtual Network (VNet) et d'un subnet privé associé.
 
 ## Ressources Azure créées
 
-- **NETWORK** : `infra-dev-network`
+- **NETWORK** : `vnet-private`
 
 ## Paramètres
 
 | Paramètre | Valeur |
 |-----------|--------|
-| Région | `swedencentral` |
+| Région | `germanywestcentral` |
 | Environnement | `dev` |
 | Préfixe | `infra-dev` |
 
@@ -40,14 +40,17 @@ terraform apply -var-file=terraform.tfvars
 
 ## Fichiers générés
 
-- `main.tf`
+- `providers.tf`
 - `variables.tf`
+- `main.tf`
+- `outputs.tf`
+- `terraform.tfvars`
 
 ## Tags appliqués
 
 ```hcl
 {
-  "project": "infra-provisioned",
+  "project": "infrastructure-networking",
   "environment": "dev",
   "owner": "devops-team"
 }
