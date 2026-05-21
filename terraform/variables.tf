@@ -24,3 +24,8 @@ variable "naming_prefix" {
   type        = string
   default     = "example"
 }
+
+
+variable "environment" {
+  default = "dev"
+}
