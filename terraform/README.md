@@ -1,4 +1,4 @@
-# Infrastructure : infra-provisioned
+# Infrastructure : add-vnet-subnet
 
 > Généré automatiquement par l'Agent IA DevOps
 
@@ -6,14 +6,14 @@
 Ajout d'un réseau virtuel et d'un sous-réseau privé dans le groupe de ressources existant.
 
 ## Ressources Azure
-- **NETWORK** : `vnet-and-private-subnet`
+- **NETWORK** : `projet-dev-vnet`
 
 ## Paramètres
 | Paramètre | Valeur |
 |-----------|--------|
-| Région | `swedencentral` |
+| Région | `germanywestcentral` |
 | Environnement | `dev` |
-| Préfixe | `infra-dev` |
+| Préfixe | `projet-dev` |
 
 ## Déploiement
 ```bash
@@ -25,12 +25,11 @@ terraform apply -var-file=terraform.tfvars
 ## Fichiers modifiés
 - `main.tf`
 - `terraform.tfvars`
-- `variables.tf`
 
 ## Tags
 ```json
 {
-  "project": "infra-provisioned",
+  "project": "add-vnet-subnet",
   "environment": "dev",
   "owner": "devops-team"
 }
