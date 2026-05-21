@@ -1,22 +1,26 @@
 variable "resource_group_name" {
-  type    = string
-  default = "example-rg"
+  description = "The name of the resource group."
+  type        = string
+  default     = "example-rg"
 }
 
 variable "location" {
-  type    = string
-  default = "East US"
+  description = "The Azure region where resources will be created."
+  type        = string
+  default     = "East US"
 }
 
 variable "tags" {
-  type    = map(string)
-  default = {
+  description = "A map of tags to assign to resources."
+  type        = map(string)
+  default     = {
     environment = "dev"
     team        = "engineering"
   }
 }
 
 variable "naming_prefix" {
-  type    = string
-  default = "example"
+  description = "Prefix for naming resources."
+  type        = string
+  default     = "example"
 }
