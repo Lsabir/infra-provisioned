@@ -7,7 +7,7 @@ variable "resource_group_name" {
 variable "location" {
   description = "The Azure region where resources will be created."
   type        = string
-  default     = "swedencentral"
+  default     = "East US"
 }
 
 variable "tags" {
@@ -15,7 +15,7 @@ variable "tags" {
   type        = map(string)
   default     = {
     environment = "dev"
-    team        = "engineering"
+    team        = "example-team"
   }
 }
 
@@ -23,9 +23,4 @@ variable "naming_prefix" {
   description = "Prefix for naming resources."
   type        = string
   default     = "example"
-}
-
-
-variable "environment" {
-  default = "dev"
 }
