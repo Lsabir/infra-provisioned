@@ -1,0 +1,5 @@
+location = "swedencentral"
+resource_group_name = "infra-provisioned-rg"
+naming_prefix = "infra-prov"
+environment = "dev"
+owner = "devops-team"
