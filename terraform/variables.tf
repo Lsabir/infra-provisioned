@@ -1,32 +1,22 @@
-variable "location" {
-  description = "Azure region."
-  type        = string
-  default     = "swedencentral"
-}
-
 variable "resource_group_name" {
-  description = "Resource group name."
-  type        = string
-  default     = "infra-provisioned-rg"
+  type    = string
+  default = "example-rg"
 }
 
-variable "environment" {
-  description = "Environment tag."
-  type        = string
-  default     = "dev"
+variable "location" {
+  type    = string
+  default = "East US"
 }
 
 variable "tags" {
-  description = "Tags applied to all resources."
-  type        = map(string)
+  type    = map(string)
   default = {
-    managed_by  = "terraform"
     environment = "dev"
+    team        = "engineering"
   }
 }
 
 variable "naming_prefix" {
-  description = "Prefix for resource names."
-  type        = string
-  default     = "infra-dev"
+  type    = string
+  default = "example"
 }
