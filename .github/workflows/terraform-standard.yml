@@ -52,19 +52,7 @@ jobs:
           terraform_version: "~1.9"
           terraform_wrapper: false
 
-      - name: Détecter le dossier Terraform modifié
-        id: tf_dir
-        run: |
-          CHANGED_DIR=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
-            | grep -E '\.(tf|tfvars)$' \
-            | xargs -I{} dirname {} \
-            | sort -u | head -1)
-          if [ -z "$CHANGED_DIR" ]; then
-            echo "❌ Aucun fichier .tf/.tfvars modifié détecté"
-            exit 1
-          fi
-          echo "dir=$CHANGED_DIR" >> "$GITHUB_OUTPUT"
-          echo "✅ Dossier Terraform : $CHANGED_DIR"
+   
 
       - name: Supprimer les blocs backend (incompatibles avec -backend=false)
         working-directory: ${{ steps.tf_dir.outputs.dir }}
