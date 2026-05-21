@@ -4,13 +4,11 @@
 
 ## Résumé
 
-Création d'une VM Ubuntu avec stockage dans le réseau existant
+Ajout d'un subnet privé dans le réseau existant pour l'environnement de développement.
 
 ## Ressources Azure créées
 
-- **NETWORK** : `existing-network`
-- **VM** : `ubuntu-vm`
-- **STORAGE** : `vm-storage`
+- **NETWORK** : `private-subnet`
 
 ## Paramètres
 
@@ -42,8 +40,9 @@ terraform apply -var-file=terraform.tfvars
 
 ## Fichiers générés
 
-- `pm-3_vm.tf`
-- `pm-3_storage.tf`
+- `main.tf`
+- `variables.tf`
+- `outputs.tf`
 
 ## Tags appliqués
 
