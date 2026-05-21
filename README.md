@@ -16,7 +16,7 @@ Ajout d'un subnet privé dans le réseau existant pour l'environnement de dével
 |-----------|--------|
 | Région | `swedencentral` |
 | Environnement | `dev` |
-| Préfixe | `infra-prov-dev` |
+| Préfixe | `infra-dev` |
 
 ## Déploiement
 
@@ -42,7 +42,6 @@ terraform apply -var-file=terraform.tfvars
 
 - `main.tf`
 - `variables.tf`
-- `outputs.tf`
 
 ## Tags appliqués
 
