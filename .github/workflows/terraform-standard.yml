@@ -34,6 +34,32 @@ jobs:
           terraform_version: "~1.9"
           terraform_wrapper: false
 
+      - name: Supprimer les blocs backend
+        working-directory: terraform
+        run: |
+          python3 << 'PYEOF'
+          import re, glob
+          def remove_backends(c):
+              lines, result, in_b, depth = c.split('\n'), [], False, 0
+              for line in lines:
+                  if not in_b:
+                      if re.match(r'\s*backend\s+"[^"]+"\s*\{', line):
+                          in_b, depth = True, line.count('{') - line.count('}')
+                          continue
+                      result.append(line)
+                  else:
+                      depth += line.count('{') - line.count('}')
+                      if depth <= 0:
+                          in_b, depth = False, 0
+              return '\n'.join(result)
+          for f in glob.glob('*.tf'):
+              c = open(f).read()
+              n = remove_backends(c)
+              if n != c:
+                  open(f, 'w').write(n)
+                  print(f'backend supprimé : {f}')
+          PYEOF
+
       - name: Restaurer le state Terraform
         uses: actions/cache/restore@v4
         with:
