@@ -1,22 +1,24 @@
-# Infrastructure : example-project
+# Infrastructure : infra-provisioned
 
 > Généré automatiquement par l'Agent IA DevOps
 
 ## Résumé
 
-Création d'une machine virtuelle Ubuntu avec stockage dans le réseau existant.
+Création d'une VM Ubuntu avec stockage dans le réseau existant
 
 ## Ressources Azure créées
 
-- **VM** : `example-dev-vm`
+- **NETWORK** : `existing-network`
+- **VM** : `ubuntu-vm`
+- **STORAGE** : `vm-storage`
 
 ## Paramètres
 
 | Paramètre | Valeur |
 |-----------|--------|
-| Région | `germanywestcentral` |
+| Région | `swedencentral` |
 | Environnement | `dev` |
-| Préfixe | `example-dev` |
+| Préfixe | `infra-prov-dev` |
 
 ## Déploiement
 
@@ -40,17 +42,14 @@ terraform apply -var-file=terraform.tfvars
 
 ## Fichiers générés
 
-- `providers.tf`
-- `variables.tf`
-- `main.tf`
-- `outputs.tf`
-- `terraform.tfvars.example`
+- `pm-3_vm.tf`
+- `pm-3_storage.tf`
 
 ## Tags appliqués
 
 ```hcl
 {
-  "project": "example-project",
+  "project": "infra-provisioned",
   "environment": "dev",
   "owner": "devops-team"
 }
