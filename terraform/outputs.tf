@@ -9,3 +9,7 @@ output "resource_group_id" {
 output "location" {
   value = azurerm_resource_group.rg.location
 }
+
+output "private_subnet_id" {
+  value = azurerm_subnet.private_subnet.id
+}
