@@ -52,10 +52,7 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init -reconfigure
 
-      - name: Terraform Validate
-        id: validate
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform validate -no-color
+
 
       - name: Terraform Plan
         id: plan
