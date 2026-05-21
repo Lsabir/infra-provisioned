@@ -56,15 +56,44 @@ jobs:
         id: tf_dir
         run: |
           CHANGED_DIR=$(git diff --name-only origin/${{ github.base_ref }}...HEAD \
-            | grep '\.tf$' \
+            | grep -E '\.(tf|tfvars)$' \
             | xargs -I{} dirname {} \
             | sort -u | head -1)
           if [ -z "$CHANGED_DIR" ]; then
-            echo "❌ Aucun fichier .tf modifié détecté"
+            echo "❌ Aucun fichier .tf/.tfvars modifié détecté"
             exit 1
           fi
           echo "dir=$CHANGED_DIR" >> "$GITHUB_OUTPUT"
           echo "✅ Dossier Terraform : $CHANGED_DIR"
+
+      - name: Supprimer les blocs backend (incompatibles avec -backend=false)
+        working-directory: ${{ steps.tf_dir.outputs.dir }}
+        run: |
+          python3 << 'PYEOF'
+          import re, glob
+
+          def remove_backends(content):
+              lines = content.split('\n')
+              result, in_b, depth = [], False, 0
+              for line in lines:
+                  if not in_b:
+                      if re.match(r'\s*backend\s+"[^"]+"\s*\{', line):
+                          in_b, depth = True, line.count('{') - line.count('}')
+                          continue
+                      result.append(line)
+                  else:
+                      depth += line.count('{') - line.count('}')
+                      if depth <= 0:
+                          in_b, depth = False, 0
+              return '\n'.join(result)
+
+          for fname in glob.glob('*.tf'):
+              c = open(fname).read()
+              n = remove_backends(c)
+              if n != c:
+                  open(fname, 'w').write(n)
+                  print(f'✅ Bloc backend supprimé de {fname}')
+          PYEOF
 
       - name: Terraform Init
         working-directory: ${{ steps.tf_dir.outputs.dir }}
@@ -164,16 +193,46 @@ jobs:
         id: tf_dir
         run: |
           CHANGED_DIR=$(git diff --name-only HEAD~1 HEAD \
-            | grep '\.tf$' \
+            | grep -E '\.(tf|tfvars)$' \
             | xargs -I{} dirname {} \
             | sort -u | head -1)
           if [ -z "$CHANGED_DIR" ]; then
-            echo "Aucun .tf modifié dans ce push — apply ignoré."
+            echo "Aucun .tf/.tfvars modifié dans ce push — apply ignoré."
             echo "dir=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "dir=$CHANGED_DIR" >> "$GITHUB_OUTPUT"
           echo "✅ Dossier Terraform : $CHANGED_DIR"
+
+      - name: Supprimer les blocs backend (incompatibles avec -backend=false)
+        if: steps.tf_dir.outputs.dir != ''
+        working-directory: ${{ steps.tf_dir.outputs.dir }}
+        run: |
+          python3 << 'PYEOF'
+          import re, glob
+
+          def remove_backends(content):
+              lines = content.split('\n')
+              result, in_b, depth = [], False, 0
+              for line in lines:
+                  if not in_b:
+                      if re.match(r'\s*backend\s+"[^"]+"\s*\{', line):
+                          in_b, depth = True, line.count('{') - line.count('}')
+                          continue
+                      result.append(line)
+                  else:
+                      depth += line.count('{') - line.count('}')
+                      if depth <= 0:
+                          in_b, depth = False, 0
+              return '\n'.join(result)
+
+          for fname in glob.glob('*.tf'):
+              c = open(fname).read()
+              n = remove_backends(c)
+              if n != c:
+                  open(fname, 'w').write(n)
+                  print(f'✅ Bloc backend supprimé de {fname}')
+          PYEOF
 
       - name: Restaurer le state Terraform
         if: steps.tf_dir.outputs.dir != ''
